@@ -996,8 +996,8 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
       }
     }
     assert(GOTBase != 0 && "missing GOT");
-    // add assertion that data segment size is 32bits, only
     int64_t GOTOffset = Value - GOTBase + Addend;
+    assert(GOTOffset <= UINT32_MAX);
     int32_t TruncOffset = (GOTOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) = TruncOffset;
     break;
@@ -1035,6 +1035,7 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
   case ELF::R_VE_PLT32: {
     uint64_t FinalAddress = Section.getLoadAddressWithOffset(Offset);
     int64_t RealOffset = Value + Addend - FinalAddress;
+    assert(RealOffset <= UINT32_MAX);
     int32_t TruncOffset = (RealOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncOffset;
