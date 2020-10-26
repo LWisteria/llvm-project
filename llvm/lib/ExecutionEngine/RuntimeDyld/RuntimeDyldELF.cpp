@@ -927,14 +927,16 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     uint32_t TruncatedAddr = (Value & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncatedAddr;
-    LLVM_DEBUG(dbgs() << "Writing " << format("%p", TruncatedAddr) << " at "
+    LLVM_DEBUG(dbgs() << "Writing R_VE_REFLONG: " << format("%p", TruncatedAddr)
+                      << " at "
                       << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_REFQUAD: {
     support::ulittle64_t::ref(Section.getAddressWithOffset(Offset)) =
         Value + Addend;
-    LLVM_DEBUG(dbgs() << "Writing " << format("%p", (Value + Addend)) << " at "
+    LLVM_DEBUG(dbgs() << "Writing R_VE_REFQUAD: "
+                      << format("%p", (Value + Addend)) << " at "
                       << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
@@ -945,6 +947,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int32_t TruncOffset = (RealOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_SREL32: "
+                      << format("%p", TruncOffset) << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_HI32: {
@@ -952,7 +957,8 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     uint32_t TruncatedAddr = (Value >> 32);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncatedAddr;
-    LLVM_DEBUG(dbgs() << "Writing " << format("%p", TruncatedAddr) << " at "
+    LLVM_DEBUG(dbgs() << "Writing R_VE_HI32: " << format("%p", TruncatedAddr)
+                      << " at "
                       << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
@@ -961,7 +967,8 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     uint32_t TruncatedAddr = (Value & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncatedAddr;
-    LLVM_DEBUG(dbgs() << "Writing " << format("%p", TruncatedAddr) << " at "
+    LLVM_DEBUG(dbgs() << "Writing R_VE_LO32: " << format("%p", TruncatedAddr)
+                      << " at "
                       << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
@@ -971,6 +978,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int32_t TruncOffset = (RealOffset >> 32);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_PC_HI32: " << format("%p", TruncOffset)
+                      << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_PC_LO32: {
@@ -979,6 +989,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int32_t TruncOffset = (RealOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_PC_LO32: " << format("%p", TruncOffset)
+                      << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_GOT32:
@@ -1000,6 +1013,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     assert(GOTOffset <= UINT32_MAX);
     int32_t TruncOffset = (GOTOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) = TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_GOTOFF32: " << format("%p", TruncOffset)
+                      << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_GOTOFF_HI32: {
@@ -1015,6 +1031,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int64_t GOTOffset = Value - GOTBase + Addend;
     int32_t TruncOffset = (GOTOffset >> 32);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) = TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_GOTOFF_HI32: "
+                      << format("%p", TruncOffset) << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_GOTOFF_LO32: {
@@ -1030,6 +1049,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int64_t GOTOffset = Value - GOTBase + Addend;
     int32_t TruncOffset = (GOTOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) = TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_GOTOFF_LO32: "
+                      << format("%p", TruncOffset) << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_PLT32: {
@@ -1039,6 +1061,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int32_t TruncOffset = (RealOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_PLT32: "
+                      << format("%p", TruncOffset) << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_PLT_HI32: {
@@ -1047,6 +1072,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int32_t TruncOffset = (RealOffset >> 32);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_PLT_HI32: "
+                      << format("%p", TruncOffset) << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   case ELF::R_VE_PLT_LO32: {
@@ -1055,6 +1083,9 @@ void RuntimeDyldELF::resolveVERelocation(const SectionEntry &Section,
     int32_t TruncOffset = (RealOffset & 0xFFFFFFFF);
     support::ulittle32_t::ref(Section.getAddressWithOffset(Offset)) =
         TruncOffset;
+    LLVM_DEBUG(dbgs() << "Writing R_VE_PLT_LO32: "
+                      << format("%p", TruncOffset) << " at "
+                      << format("%p\n", Section.getAddressWithOffset(Offset)));
     break;
   }
   }
@@ -1914,6 +1945,38 @@ RuntimeDyldELF::processRelocationRef(
     } else if (RelType == ELF::R_X86_64_PC64) {
       Value.Addend += support::ulittle64_t::ref(computePlaceholderAddress(SectionID, Offset));
       processSimpleRelocation(SectionID, Offset, RelType, Value);
+    } else {
+      processSimpleRelocation(SectionID, Offset, RelType, Value);
+    }
+  } else if (Arch == Triple::ve) {
+    if (RelType == ELF::R_VE_PC_LO32 && TargetName == "_GLOBAL_OFFSET_TABLE_") {
+      // VE refers _GLOBAL_OFFSET_TABLE_ as R_VE_PC_*32, so we need to
+      // materialize the address of the base of the GOT relative to the PC.
+      // This doesn't create a GOT entry, but it does mean we need a GOT
+      // section.
+      uint64_t GOTOffset = findOrAllocGOTEntry(Value, ELF::R_VE_REFQUAD);
+      resolveGOTOffsetRelocation(SectionID, Offset, GOTOffset + Addend,
+                                 ELF::R_VE_PC_LO32);
+#if 0
+      (void)allocateGOTEntries(0);
+      resolveGOTOffsetRelocation(SectionID, Offset, Addend, ELF::R_VE_PC_LO32);
+#endif
+#if 0
+      // Craete new GOT entry or find existing one. If GOT entry is
+      // to be created, then we also emit ABS64 relocation for it.
+      uint64_t GOTOffset = findOrAllocGOTEntry(Value, ELF::R_AARCH64_ABS64);
+      resolveGOTOffsetRelocation(SectionID, Offset, GOTOffset + Addend,
+                                 ELF::R_AARCH64_ADR_PREL_PG_HI21);
+#endif
+    } else if (RelType == ELF::R_VE_PC_HI32 &&
+               TargetName == "_GLOBAL_OFFSET_TABLE_") {
+      // VE refers _GLOBAL_OFFSET_TABLE_ as R_VE_PC_*32, so we need to
+      // materialize the address of the base of the GOT relative to the PC.
+      // This doesn't create a GOT entry, but it does mean we need a GOT
+      // section.
+      uint64_t GOTOffset = findOrAllocGOTEntry(Value, ELF::R_VE_REFQUAD);
+      resolveGOTOffsetRelocation(SectionID, Offset, GOTOffset + Addend,
+                                 ELF::R_VE_PC_HI32);
     } else {
       processSimpleRelocation(SectionID, Offset, RelType, Value);
     }
